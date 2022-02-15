@@ -1,0 +1,795 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <link rel="stylesheet" href="css/leaflet.css"><link rel="stylesheet" href="css/L.Control.Locate.min.css">
+        <link rel="stylesheet" href="css/qgis2web.css"><link rel="stylesheet" href="css/fontawesome-all.min.css">
+        <link rel="stylesheet" href="css/leaflet-search.css">
+        <link rel="stylesheet" href="css/leaflet-control-geocoder.Geocoder.css">
+        <link rel="stylesheet" href="css/leaflet-measure.css">
+        <style>
+        html, body, #map {
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            margin: 0;
+        }
+        </style>
+        <title></title>
+    </head>
+    <body>
+        <div id="map">
+        </div>
+        <script src="js/qgis2web_expressions.js"></script>
+        <script src="js/leaflet.js"></script><script src="js/L.Control.Locate.min.js"></script>
+        <script src="js/leaflet.rotatedMarker.js"></script>
+        <script src="js/leaflet.pattern.js"></script>
+        <script src="js/leaflet-hash.js"></script>
+        <script src="js/Autolinker.min.js"></script>
+        <script src="js/rbush.min.js"></script>
+        <script src="js/labelgun.min.js"></script>
+        <script src="js/labels.js"></script>
+        <script src="js/leaflet-control-geocoder.Geocoder.js"></script>
+        <script src="js/leaflet-measure.js"></script>
+        <script src="js/leaflet-search.js"></script>
+        <script src="data/NucleosAgrarios_5.js"></script>
+        <script src="data/Calles_6.js"></script>
+        <script src="data/Localidades_rurales_VY_7.js"></script>
+        <script src="data/PueblosRioMayo_8.js"></script>
+        <script src="data/LocalidadesUrbanas_9.js"></script>
+        <script src="data/MunicipiosColindantes_10.js"></script>
+        <script src="data/Municipios_11.js"></script>
+        <script src="data/RegionValledelYaqui_12.js"></script>
+        <script>
+        var highlightLayer;
+        function highlightFeature(e) {
+            highlightLayer = e.target;
+            highlightLayer.openPopup();
+        }
+        var map = L.map('map', {
+            zoomControl:true, maxZoom:28, minZoom:1
+        }).fitBounds([[26.106261606979338,-111.59100623605975],[28.626595504010716,-105.57089161046774]]);
+        var hash = new L.Hash(map);
+        map.attributionControl.setPrefix('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a> &middot; <a href="https://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> &middot; <a href="https://qgis.org">QGIS</a>');
+        var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});
+        L.control.locate({locateOptions: {maxZoom: 19}}).addTo(map);
+        var measureControl = new L.Control.Measure({
+            position: 'topleft',
+            primaryLengthUnit: 'meters',
+            secondaryLengthUnit: 'kilometers',
+            primaryAreaUnit: 'sqmeters',
+            secondaryAreaUnit: 'hectares'
+        });
+        measureControl.addTo(map);
+        document.getElementsByClassName('leaflet-control-measure-toggle')[0]
+        .innerHTML = '';
+        document.getElementsByClassName('leaflet-control-measure-toggle')[0]
+        .className += ' fas fa-ruler';
+        var bounds_group = new L.featureGroup([]);
+        function setBounds() {
+        }
+        map.createPane('pane_GoogleMaps_0');
+        map.getPane('pane_GoogleMaps_0').style.zIndex = 400;
+        var layer_GoogleMaps_0 = L.tileLayer('https://mt1.google.com/vt/lyrs=r&x={x}&y={y}&z={z}', {
+            pane: 'pane_GoogleMaps_0',
+            opacity: 1.0,
+            attribution: '',
+            minZoom: 1,
+            maxZoom: 28,
+            minNativeZoom: 0,
+            maxNativeZoom: 18
+        });
+        layer_GoogleMaps_0;
+        map.addLayer(layer_GoogleMaps_0);
+        map.createPane('pane_BINGvirtualearth_1');
+        map.getPane('pane_BINGvirtualearth_1').style.zIndex = 401;
+        var layer_BINGvirtualearth_1 = L.tileLayer('http://ecn.t3.tiles.virtualearth.net/tiles/a{​q}​.jpeg?g=1', {
+            pane: 'pane_BINGvirtualearth_1',
+            opacity: 1.0,
+            attribution: '',
+            minZoom: 1,
+            maxZoom: 28,
+            minNativeZoom: 0,
+            maxNativeZoom: 18
+        });
+        layer_BINGvirtualearth_1;
+        map.addLayer(layer_BINGvirtualearth_1);
+        map.createPane('pane_ESRIsatellite_2');
+        map.getPane('pane_ESRIsatellite_2').style.zIndex = 402;
+        var layer_ESRIsatellite_2 = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{​z}​/{​y}​/{​x}​', {
+            pane: 'pane_ESRIsatellite_2',
+            opacity: 1.0,
+            attribution: '',
+            minZoom: 1,
+            maxZoom: 28,
+            minNativeZoom: 0,
+            maxNativeZoom: 18
+        });
+        layer_ESRIsatellite_2;
+        map.addLayer(layer_ESRIsatellite_2);
+        map.createPane('pane_GoogleSatellite_3');
+        map.getPane('pane_GoogleSatellite_3').style.zIndex = 403;
+        var layer_GoogleSatellite_3 = L.tileLayer('http://www.google.cn/maps/vt?lyrs=s@189&gl=cn&x={x}&y={y}&z={z}', {
+            pane: 'pane_GoogleSatellite_3',
+            opacity: 1.0,
+            attribution: '',
+            minZoom: 1,
+            maxZoom: 28,
+            minNativeZoom: 0,
+            maxNativeZoom: 18
+        });
+        layer_GoogleSatellite_3;
+        map.addLayer(layer_GoogleSatellite_3);
+        map.createPane('pane_ReginAgrcoladelRoMayo1909_4');
+        map.getPane('pane_ReginAgrcoladelRoMayo1909_4').style.zIndex = 404;
+        var img_ReginAgrcoladelRoMayo1909_4 = 'data/ReginAgrcoladelRoMayo1909_4.png';
+        var img_bounds_ReginAgrcoladelRoMayo1909_4 = [[26.62094783351244,-110.0123224043493],[27.221027332809616,-109.32178290727134]];
+        var layer_ReginAgrcoladelRoMayo1909_4 = new L.imageOverlay(img_ReginAgrcoladelRoMayo1909_4,
+                                              img_bounds_ReginAgrcoladelRoMayo1909_4,
+                                              {pane: 'pane_ReginAgrcoladelRoMayo1909_4'});
+        bounds_group.addLayer(layer_ReginAgrcoladelRoMayo1909_4);
+        map.addLayer(layer_ReginAgrcoladelRoMayo1909_4);
+        function pop_NucleosAgrarios_5(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">Name</th>\
+                        <td>' + (feature.properties['Name'] !== null ? autolinker.link(feature.properties['Name'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">descriptio</th>\
+                        <td>' + (feature.properties['descriptio'] !== null ? autolinker.link(feature.properties['descriptio'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">layer</th>\
+                        <td>' + (feature.properties['layer'] !== null ? autolinker.link(feature.properties['layer'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['path'] !== null ? autolinker.link(feature.properties['path'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_NucleosAgrarios_5_0(feature) {
+            switch(String(feature.properties['descriptio'])) {
+                case 'Asentamiento Humano':
+                    return {
+                pane: 'pane_NucleosAgrarios_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(203,0,26,0.5019607843137255)',
+                interactive: true,
+            }
+                    break;
+                case 'Reservas de crecimiento':
+                    return {
+                pane: 'pane_NucleosAgrarios_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(102,255,112,0.8)',
+                interactive: true,
+            }
+                    break;
+                case 'Tierras uso comun':
+                    return {
+                pane: 'pane_NucleosAgrarios_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(114,195,0,0.5019607843137255)',
+                interactive: true,
+            }
+                    break;
+                case 'Zona de parcelas':
+                    return {
+                pane: 'pane_NucleosAgrarios_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(246,78,0,0.7019607843137254)',
+                interactive: true,
+            }
+                    break;
+                default:
+                    return {
+                pane: 'pane_NucleosAgrarios_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(29,229,183,1.0)',
+                interactive: true,
+            }
+                    break;
+            }
+        }
+        map.createPane('pane_NucleosAgrarios_5');
+        map.getPane('pane_NucleosAgrarios_5').style.zIndex = 405;
+        map.getPane('pane_NucleosAgrarios_5').style['mix-blend-mode'] = 'normal';
+        var layer_NucleosAgrarios_5 = new L.geoJson(json_NucleosAgrarios_5, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_NucleosAgrarios_5',
+            layerName: 'layer_NucleosAgrarios_5',
+            pane: 'pane_NucleosAgrarios_5',
+            onEachFeature: pop_NucleosAgrarios_5,
+            style: style_NucleosAgrarios_5_0,
+        });
+        bounds_group.addLayer(layer_NucleosAgrarios_5);
+        map.addLayer(layer_NucleosAgrarios_5);
+        function pop_Calles_6(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">CVEGEO</th>\
+                        <td>' + (feature.properties['CVEGEO'] !== null ? autolinker.link(feature.properties['CVEGEO'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">CVE_ENT</th>\
+                        <td>' + (feature.properties['CVE_ENT'] !== null ? autolinker.link(feature.properties['CVE_ENT'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">CVE_MUN</th>\
+                        <td>' + (feature.properties['CVE_MUN'] !== null ? autolinker.link(feature.properties['CVE_MUN'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">CVE_LOC</th>\
+                        <td>' + (feature.properties['CVE_LOC'] !== null ? autolinker.link(feature.properties['CVE_LOC'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">CVEVIAL</th>\
+                        <td>' + (feature.properties['CVEVIAL'] !== null ? autolinker.link(feature.properties['CVEVIAL'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">CVESEG</th>\
+                        <td>' + (feature.properties['CVESEG'] !== null ? autolinker.link(feature.properties['CVESEG'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">NOMVIAL</th>\
+                        <td>' + (feature.properties['NOMVIAL'] !== null ? autolinker.link(feature.properties['NOMVIAL'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">TIPOVIAL</th>\
+                        <td>' + (feature.properties['TIPOVIAL'] !== null ? autolinker.link(feature.properties['TIPOVIAL'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">SENTIDO</th>\
+                        <td>' + (feature.properties['SENTIDO'] !== null ? autolinker.link(feature.properties['SENTIDO'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">TIPOSEN</th>\
+                        <td>' + (feature.properties['TIPOSEN'] !== null ? autolinker.link(feature.properties['TIPOSEN'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">AMBITO</th>\
+                        <td>' + (feature.properties['AMBITO'] !== null ? autolinker.link(feature.properties['AMBITO'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_Calles_6_0() {
+            return {
+                pane: 'pane_Calles_6',
+                opacity: 1,
+                color: 'rgba(247,226,0,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+        }
+        map.createPane('pane_Calles_6');
+        map.getPane('pane_Calles_6').style.zIndex = 406;
+        map.getPane('pane_Calles_6').style['mix-blend-mode'] = 'normal';
+        var layer_Calles_6 = new L.geoJson(json_Calles_6, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Calles_6',
+            layerName: 'layer_Calles_6',
+            pane: 'pane_Calles_6',
+            onEachFeature: pop_Calles_6,
+            style: style_Calles_6_0,
+        });
+        bounds_group.addLayer(layer_Calles_6);
+        map.addLayer(layer_Calles_6);
+        function pop_Localidades_rurales_VY_7(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['CVEGEO'] !== null ? autolinker.link(feature.properties['CVEGEO'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['CVE_ENT'] !== null ? autolinker.link(feature.properties['CVE_ENT'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['CVE_MUN'] !== null ? autolinker.link(feature.properties['CVE_MUN'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['CVE_LOC'] !== null ? autolinker.link(feature.properties['CVE_LOC'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['CVE_AGEB'] !== null ? autolinker.link(feature.properties['CVE_AGEB'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['CVE_MZA'] !== null ? autolinker.link(feature.properties['CVE_MZA'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['NOMGEO'] !== null ? autolinker.link(feature.properties['NOMGEO'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['PLANO'] !== null ? autolinker.link(feature.properties['PLANO'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_Localidades_rurales_VY_7_0() {
+            return {
+                pane: 'pane_Localidades_rurales_VY_7',
+                radius: 2.0,
+                opacity: 1,
+                color: 'rgba(255,255,255,0.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(0,0,0,1.0)',
+                interactive: true,
+            }
+        }
+        map.createPane('pane_Localidades_rurales_VY_7');
+        map.getPane('pane_Localidades_rurales_VY_7').style.zIndex = 407;
+        map.getPane('pane_Localidades_rurales_VY_7').style['mix-blend-mode'] = 'normal';
+        var layer_Localidades_rurales_VY_7 = new L.geoJson(json_Localidades_rurales_VY_7, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Localidades_rurales_VY_7',
+            layerName: 'layer_Localidades_rurales_VY_7',
+            pane: 'pane_Localidades_rurales_VY_7',
+            onEachFeature: pop_Localidades_rurales_VY_7,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.circleMarker(latlng, style_Localidades_rurales_VY_7_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_Localidades_rurales_VY_7);
+        map.addLayer(layer_Localidades_rurales_VY_7);
+        function pop_PueblosRioMayo_8(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">CVEGEO</th>\
+                        <td>' + (feature.properties['CVEGEO'] !== null ? autolinker.link(feature.properties['CVEGEO'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">CVE_ENT</th>\
+                        <td>' + (feature.properties['CVE_ENT'] !== null ? autolinker.link(feature.properties['CVE_ENT'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['NOMGEO'] !== null ? autolinker.link(feature.properties['NOMGEO'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Terreno</th>\
+                        <td>' + (feature.properties['Terreno'] !== null ? autolinker.link(feature.properties['Terreno'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Propietari</th>\
+                        <td>' + (feature.properties['Propietari'] !== null ? autolinker.link(feature.properties['Propietari'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Superficie</th>\
+                        <td>' + (feature.properties['Superficie'] !== null ? autolinker.link(feature.properties['Superficie'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_PueblosRioMayo_8_0() {
+            return {
+                pane: 'pane_PueblosRioMayo_8',
+                opacity: 1,
+                color: 'rgba(182,27,27,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,0,0,0.17254901960784313)',
+                interactive: true,
+            }
+        }
+        map.createPane('pane_PueblosRioMayo_8');
+        map.getPane('pane_PueblosRioMayo_8').style.zIndex = 408;
+        map.getPane('pane_PueblosRioMayo_8').style['mix-blend-mode'] = 'normal';
+        var layer_PueblosRioMayo_8 = new L.geoJson(json_PueblosRioMayo_8, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_PueblosRioMayo_8',
+            layerName: 'layer_PueblosRioMayo_8',
+            pane: 'pane_PueblosRioMayo_8',
+            onEachFeature: pop_PueblosRioMayo_8,
+            style: style_PueblosRioMayo_8_0,
+        });
+        bounds_group.addLayer(layer_PueblosRioMayo_8);
+        map.addLayer(layer_PueblosRioMayo_8);
+        function pop_LocalidadesUrbanas_9(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">CVEGEO</th>\
+                        <td>' + (feature.properties['CVEGEO'] !== null ? autolinker.link(feature.properties['CVEGEO'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">CVE_ENT</th>\
+                        <td>' + (feature.properties['CVE_ENT'] !== null ? autolinker.link(feature.properties['CVE_ENT'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">CVE_MUN</th>\
+                        <td>' + (feature.properties['CVE_MUN'] !== null ? autolinker.link(feature.properties['CVE_MUN'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">CVE_LOC</th>\
+                        <td>' + (feature.properties['CVE_LOC'] !== null ? autolinker.link(feature.properties['CVE_LOC'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">NOMGEO</th>\
+                        <td>' + (feature.properties['NOMGEO'] !== null ? autolinker.link(feature.properties['NOMGEO'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">AMBITO</th>\
+                        <td>' + (feature.properties['AMBITO'] !== null ? autolinker.link(feature.properties['AMBITO'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_LocalidadesUrbanas_9_0() {
+            return {
+                pane: 'pane_LocalidadesUrbanas_9',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(250,255,190,0.6980392156862745)',
+                interactive: true,
+            }
+        }
+        map.createPane('pane_LocalidadesUrbanas_9');
+        map.getPane('pane_LocalidadesUrbanas_9').style.zIndex = 409;
+        map.getPane('pane_LocalidadesUrbanas_9').style['mix-blend-mode'] = 'normal';
+        var layer_LocalidadesUrbanas_9 = new L.geoJson(json_LocalidadesUrbanas_9, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_LocalidadesUrbanas_9',
+            layerName: 'layer_LocalidadesUrbanas_9',
+            pane: 'pane_LocalidadesUrbanas_9',
+            onEachFeature: pop_LocalidadesUrbanas_9,
+            style: style_LocalidadesUrbanas_9_0,
+        });
+        bounds_group.addLayer(layer_LocalidadesUrbanas_9);
+        map.addLayer(layer_LocalidadesUrbanas_9);
+        function pop_MunicipiosColindantes_10(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">CVEGEO</th>\
+                        <td>' + (feature.properties['CVEGEO'] !== null ? autolinker.link(feature.properties['CVEGEO'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">CVE_ENT</th>\
+                        <td>' + (feature.properties['CVE_ENT'] !== null ? autolinker.link(feature.properties['CVE_ENT'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">CVE_MUN</th>\
+                        <td>' + (feature.properties['CVE_MUN'] !== null ? autolinker.link(feature.properties['CVE_MUN'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">NOMGEO</th>\
+                        <td>' + (feature.properties['NOMGEO'] !== null ? autolinker.link(feature.properties['NOMGEO'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_MunicipiosColindantes_10_0() {
+            return {
+                pane: 'pane_MunicipiosColindantes_10',
+                opacity: 1,
+                color: 'rgba(216,0,18,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,255,255,0.403921568627451)',
+                interactive: true,
+            }
+        }
+        map.createPane('pane_MunicipiosColindantes_10');
+        map.getPane('pane_MunicipiosColindantes_10').style.zIndex = 410;
+        map.getPane('pane_MunicipiosColindantes_10').style['mix-blend-mode'] = 'normal';
+        var layer_MunicipiosColindantes_10 = new L.geoJson(json_MunicipiosColindantes_10, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_MunicipiosColindantes_10',
+            layerName: 'layer_MunicipiosColindantes_10',
+            pane: 'pane_MunicipiosColindantes_10',
+            onEachFeature: pop_MunicipiosColindantes_10,
+            style: style_MunicipiosColindantes_10_0,
+        });
+        bounds_group.addLayer(layer_MunicipiosColindantes_10);
+        map.addLayer(layer_MunicipiosColindantes_10);
+        function pop_Municipios_11(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">CVEGEO</th>\
+                        <td>' + (feature.properties['CVEGEO'] !== null ? autolinker.link(feature.properties['CVEGEO'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">CVE_ENT</th>\
+                        <td>' + (feature.properties['CVE_ENT'] !== null ? autolinker.link(feature.properties['CVE_ENT'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">CVE_MUN</th>\
+                        <td>' + (feature.properties['CVE_MUN'] !== null ? autolinker.link(feature.properties['CVE_MUN'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">NOMGEO</th>\
+                        <td>' + (feature.properties['NOMGEO'] !== null ? autolinker.link(feature.properties['NOMGEO'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_Municipios_11_0() {
+            return {
+                pane: 'pane_Municipios_11',
+                opacity: 1,
+                color: 'rgba(29,85,254,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 2.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+        }
+        map.createPane('pane_Municipios_11');
+        map.getPane('pane_Municipios_11').style.zIndex = 411;
+        map.getPane('pane_Municipios_11').style['mix-blend-mode'] = 'normal';
+        var layer_Municipios_11 = new L.geoJson(json_Municipios_11, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Municipios_11',
+            layerName: 'layer_Municipios_11',
+            pane: 'pane_Municipios_11',
+            onEachFeature: pop_Municipios_11,
+            style: style_Municipios_11_0,
+        });
+        bounds_group.addLayer(layer_Municipios_11);
+        map.addLayer(layer_Municipios_11);
+        function pop_RegionValledelYaqui_12(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">CVEGEO</th>\
+                        <td>' + (feature.properties['CVEGEO'] !== null ? autolinker.link(feature.properties['CVEGEO'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">CVE_ENT</th>\
+                        <td>' + (feature.properties['CVE_ENT'] !== null ? autolinker.link(feature.properties['CVE_ENT'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">CVE_MUN</th>\
+                        <td>' + (feature.properties['CVE_MUN'] !== null ? autolinker.link(feature.properties['CVE_MUN'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['NOMGEO'] !== null ? autolinker.link(feature.properties['NOMGEO'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Region</th>\
+                        <td>' + (feature.properties['Region'] !== null ? autolinker.link(feature.properties['Region'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_RegionValledelYaqui_12_0() {
+            return {
+                pane: 'pane_RegionValledelYaqui_12',
+                opacity: 1,
+                color: 'rgba(217,24,27,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 3.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+        }
+        map.createPane('pane_RegionValledelYaqui_12');
+        map.getPane('pane_RegionValledelYaqui_12').style.zIndex = 412;
+        map.getPane('pane_RegionValledelYaqui_12').style['mix-blend-mode'] = 'normal';
+        var layer_RegionValledelYaqui_12 = new L.geoJson(json_RegionValledelYaqui_12, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_RegionValledelYaqui_12',
+            layerName: 'layer_RegionValledelYaqui_12',
+            pane: 'pane_RegionValledelYaqui_12',
+            onEachFeature: pop_RegionValledelYaqui_12,
+            style: style_RegionValledelYaqui_12_0,
+        });
+        bounds_group.addLayer(layer_RegionValledelYaqui_12);
+        map.addLayer(layer_RegionValledelYaqui_12);
+        var osmGeocoder = new L.Control.Geocoder({
+            collapsed: true,
+            position: 'topleft',
+            text: 'Search',
+            title: 'Testing'
+        }).addTo(map);
+        document.getElementsByClassName('leaflet-control-geocoder-icon')[0]
+        .className += ' fa fa-search';
+        document.getElementsByClassName('leaflet-control-geocoder-icon')[0]
+        .title += 'Search for a place';
+        var baseMaps = {};
+        L.control.layers(baseMaps,{'<img src="legend/RegionValledelYaqui_12.png" /> Region Valle del Yaqui': layer_RegionValledelYaqui_12,'<img src="legend/Municipios_11.png" /> Municipios': layer_Municipios_11,'<img src="legend/MunicipiosColindantes_10.png" /> Municipios Colindantes': layer_MunicipiosColindantes_10,'<img src="legend/LocalidadesUrbanas_9.png" /> Localidades Urbanas': layer_LocalidadesUrbanas_9,'<img src="legend/PueblosRioMayo_8.png" /> Pueblos Rio Mayo': layer_PueblosRioMayo_8,'<img src="legend/Localidades_rurales_VY_7.png" /> Localidades_rurales_VY': layer_Localidades_rurales_VY_7,'<img src="legend/Calles_6.png" /> Calles': layer_Calles_6,'Nucleos Agrarios<br /><table><tr><td style="text-align: center;"><img src="legend/NucleosAgrarios_5_AsentamientoHumano0.png" /></td><td>Asentamiento Humano</td></tr><tr><td style="text-align: center;"><img src="legend/NucleosAgrarios_5_Reservasdecrecimiento1.png" /></td><td>Reservas de crecimiento</td></tr><tr><td style="text-align: center;"><img src="legend/NucleosAgrarios_5_Tierrasusocomun2.png" /></td><td>Tierras uso comun</td></tr><tr><td style="text-align: center;"><img src="legend/NucleosAgrarios_5_Zonadeparcelas3.png" /></td><td>Zona de parcelas</td></tr><tr><td style="text-align: center;"><img src="legend/NucleosAgrarios_5_4.png" /></td><td></td></tr></table>': layer_NucleosAgrarios_5,"Región Agrícola del Río Mayo 1909": layer_ReginAgrcoladelRoMayo1909_4,"Google Satellite": layer_GoogleSatellite_3,"ESRI satellite": layer_ESRIsatellite_2,"BING virtual earth": layer_BINGvirtualearth_1,"Google Maps": layer_GoogleMaps_0,},{collapsed:false}).addTo(map);
+        setBounds();
+        map.addControl(new L.Control.Search({
+            layer: layer_PueblosRioMayo_8,
+            initial: false,
+            hideMarkerOnCollapse: true,
+            propertyName: 'Terreno'}));
+        document.getElementsByClassName('search-button')[0].className +=
+         ' fa fa-binoculars';
+        L.ImageOverlay.include({
+            getBounds: function () {
+                return this._bounds;
+            }
+        });
+        resetLabels([layer_Localidades_rurales_VY_7,layer_PueblosRioMayo_8,layer_LocalidadesUrbanas_9,layer_MunicipiosColindantes_10]);
+        map.on("zoomend", function(){
+            resetLabels([layer_Localidades_rurales_VY_7,layer_PueblosRioMayo_8,layer_LocalidadesUrbanas_9,layer_MunicipiosColindantes_10]);
+        });
+        map.on("layeradd", function(){
+            resetLabels([layer_Localidades_rurales_VY_7,layer_PueblosRioMayo_8,layer_LocalidadesUrbanas_9,layer_MunicipiosColindantes_10]);
+        });
+        map.on("layerremove", function(){
+            resetLabels([layer_Localidades_rurales_VY_7,layer_PueblosRioMayo_8,layer_LocalidadesUrbanas_9,layer_MunicipiosColindantes_10]);
+        });
+        </script>
+    </body>
+</html>
